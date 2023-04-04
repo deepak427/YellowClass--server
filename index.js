@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 app.use('/user', userRoutes);
 app.use('/contact', contactRoutes)
 
-const PORT =  5000;
+const PORT =  4253;
 
 const DATABASE_URL =  process.env.CONNECTION_URL;
 
