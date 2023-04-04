@@ -35,25 +35,27 @@ export const addContact = async (req, res) => {
 export const deleteContact = async (req, res) => {
   const { id: _id } = req.params;
 
-  const { contactId } = req.body;
+  const { contactIds } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(200).send("User unavalible");
   }
 
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
+  if (!mongoose.Types.ObjectId.isValid(contactIds[0])) {
     return res.status(200).send("Contact unavalible");
   }
 
   try {
-    const updatedUser = await usersYellowClass.findByIdAndUpdate(
-      _id,
-      {
-        $pull: { contacts: { _id: contactId } },
-      },
-      { new: true }
-    );
-
+    contactIds.forEach(async (contactId) => {
+      await usersYellowClass.findByIdAndUpdate(
+        _id,
+        {
+          $pull: { contacts: { _id: contactId } },
+        },
+        { new: true }
+      );
+    });
+    var updatedUser = await usersYellowClass.findById(_id);
     const newUserDetail = [];
     newUserDetail.push({
       _id: updatedUser._id,
@@ -83,15 +85,14 @@ export const editContact = async (req, res) => {
   try {
     const user = await usersYellowClass.findById(_id);
     await user.contacts.map((Contact) => {
-        if (Contact._id.toString() === contactId) {
-            user.contacts[user.contacts.indexOf(Contact)].name = name;
-            user.contacts[user.contacts.indexOf(Contact)].contact = contact;
-        }
-    })
-    const updatedUser = await usersYellowClass.findByIdAndUpdate(
-        _id,user,
-      { new: true }
-    );
+      if (Contact._id.toString() === contactId) {
+        user.contacts[user.contacts.indexOf(Contact)].name = name;
+        user.contacts[user.contacts.indexOf(Contact)].contact = contact;
+      }
+    });
+    const updatedUser = await usersYellowClass.findByIdAndUpdate(_id, user, {
+      new: true,
+    });
 
     const newUserDetail = [];
     newUserDetail.push({

@@ -6,7 +6,7 @@ import auth from "../middleware/auth.js";
 const router = express.Router();
 
 router.patch('/add/:id',auth, addContact)
-router.patch('/delete/:id',auth, deleteContact)
+router.patch('/delete/:id', deleteContact)
 router.patch('/edit/:id',auth, editContact)
 
 export default router
